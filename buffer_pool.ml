@@ -1,5 +1,4 @@
-
-module type S = sig 
+module type Buffer = sig 
   type t
 
   val create : int -> t
@@ -11,17 +10,16 @@ module type S = sig
   val sub : t -> int -> t
 end
 
-module type Buffer_pool = sig
+module Make( B : Buffer ) : sig
   type t
-  type buffer
   type pooled_buffer
+  type buffer = B.t
+  val get_buf: pooled_buffer -> buffer
   val create : t -> int -> pooled_buffer
   val release : t -> pooled_buffer -> unit
   val make : unit -> t
-  val get_buf: pooled_buffer -> buffer
 end 
-
-module Make(B : S ) : Buffer_pool with type buffer = B.t = struct
+  = struct
 
   module M = Map.Make(Int)
 
