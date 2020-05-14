@@ -1,7 +1,8 @@
 (lang dune 2.5)
 (name buffer_pool)
 (source (github cjen1/buffer_pool))
-(authors "Chris Jensen")
+(authors "Chris Jensen <cjj39@cam.ac.uk>")
+(maintainers "Chris Jensen <cjj39@cam.ac.uk>")
 
 (generate_opam_files true)
 
