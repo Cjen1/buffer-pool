@@ -4,8 +4,8 @@ synopsis:
   "A pool of buffers which automatically increases in size as required"
 maintainer: ["Chris Jensen <cjj39@cam.ac.uk>"]
 authors: ["Chris Jensen <cjj39@cam.ac.uk>"]
-homepage: "https://github.com/cjen1/buffer_pool"
-bug-reports: "https://github.com/cjen1/buffer_pool/issues"
+homepage: "https://github.com/cjen1/buffer-pool"
+bug-reports: "https://github.com/cjen1/buffer-pool/issues"
 depends: [
   "dune" {>= "2.5"}
   "cstruct" {with-test}
@@ -25,4 +25,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/cjen1/buffer_pool.git"
+dev-repo: "git+https://github.com/cjen1/buffer-pool.git"
