@@ -1,5 +1,12 @@
 (library
  (name buffer_pool)
  (public_name buffer_pool)
+ (modules Buffer_pool)
  )
+
+(test
+ (name test)
+ (modules Test)
+ (libraries cstruct buffer_pool crowbar)
+ (action (run ./test.exe)))
 
