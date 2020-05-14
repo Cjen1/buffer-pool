@@ -8,4 +8,8 @@
 (package
   (name buffer_pool)
   (synopsis "A pool of buffers which automatically increases in size as required")
+  (depends 
+    (cstruct :with-test)
+    (crowbar :with-test)
   )
+)

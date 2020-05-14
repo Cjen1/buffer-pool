@@ -7,6 +7,8 @@ homepage: "https://github.com/cjen1/buffer_pool"
 bug-reports: "https://github.com/cjen1/buffer_pool/issues"
 depends: [
   "dune" {>= "2.5"}
+  "cstruct" {with-test}
+  "crowbar" {with-test}
 ]
 build: [
   ["dune" "subst"] {pinned}
