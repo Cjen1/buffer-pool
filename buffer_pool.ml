@@ -4,7 +4,7 @@ module type S = sig
 
   val create : int -> t
 
-  val reset : t -> t
+  val reset : t -> unit
 
   val len : t -> int
 end
@@ -18,7 +18,7 @@ module Make(B : S ) = struct
   type t = {mutable available : B.t list M.t}
 
 
-  let make () = []
+  let make () = {available = M.empty}
 
   let lg2 =
     let base = log(2.) in
@@ -50,14 +50,14 @@ module Make(B : S ) = struct
     fun () -> Random.int max
 
   let create t size = 
-    let e = lg2 size |> ceil |> Int.of_float in
+    let e = size |> Int.to_float |> lg2 |> ceil |> Int.of_float in
     let default () = B.create @@ Int.of_float (2. ** (Float.of_int e)) in
     let avail', b = pop_or_create t.available e default in
     t.available <- avail';
     b
 
   let release t buf = 
-    let buf = B.reset buf in
-    let id = B.len buf |> Int.to_float |> lg2 |> ceil |> Int.of_float in
+    B.reset buf;
+    let id = buf |> B.len |> Int.to_float |> lg2 |> ceil |> Int.of_float in
     t.available <- push_or_create t.available id buf
 end 
