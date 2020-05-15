@@ -65,4 +65,8 @@ end
 
   let get_buf buf = 
     buf.buf
+
+  let sub buf off len = 
+    let buf' = B.sub buf.buf len in
+    {buf with buf = buf'}
 end 
