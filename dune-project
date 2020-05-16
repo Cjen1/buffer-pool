@@ -10,17 +10,7 @@
   (name buffer-pool)
   (synopsis "A pool of buffers which automatically increases in size as required")
   (depends 
-    (ocaml (>= 4.03.0))
-    (cstruct :with-test)
-    (crowbar :with-test)
-  )
-)
-
-(package 
-  (name buffer-pool-min)
-  (synopsis "A pool of buffers which resizes as required. Has a simpler API than buffer-pool, however may use more buffers")
-  (depends
-    (ocaml (>= 4.03.0))
+    (ocaml (>= 4.05.0))
     (cstruct :with-test)
     (crowbar :with-test)
   )

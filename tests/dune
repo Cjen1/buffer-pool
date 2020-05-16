@@ -3,11 +3,3 @@
  (modules Test)
  (libraries cstruct buffer-pool crowbar)
  (action (run ./test.exe)))
-
-(test
- (name test_min)
- (modules Test_min)
- (libraries cstruct crowbar buffer-pool-min)
- (action (run ./test.exe)))
-
-

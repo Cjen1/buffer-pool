@@ -12,14 +12,10 @@ end
 
 module Make( B : Buffer ) : sig
   type t
-  type pooled_buffer
   type buffer = B.t
-  val get_buf: pooled_buffer -> buffer
-  val alloc : t -> int -> pooled_buffer
-  val create : B.t -> pooled_buffer
-  val release : t -> pooled_buffer -> unit
+  val alloc : t -> int -> B.t
+  val release : t -> buffer -> unit
   val make : unit -> t
-  val sub : pooled_buffer -> int -> int -> pooled_buffer
 end 
   = struct
 
@@ -27,25 +23,12 @@ end
 
   type buffer = B.t
 
-  type pooled_buffer = {buf:buffer; underlying:buffer}
-
   type t = {mutable available : buffer list M.t}
 
   let make () = {available = M.empty}
 
-  let lg2 =
-    let base = log(2.) in
-    fun x -> log x /. base
-
-  let find_opt i m = 
-  try
-    let res = M.find i m in
-    Some res
-  with Not_found -> 
-    None
-
-  let pop m i f =
-    match find_opt i m with
+  let pop m i f = 
+    match M.find_opt i m with
     | Some [] -> raise @@ Invalid_argument "Empty list in map"
     | Some [b] -> 
       M.remove i m, b
@@ -54,31 +37,26 @@ end
       m', b
     | None -> m, f()
 
-  let push m i v = 
-    match find_opt i m with
+  let push m v = 
+    let i = B.len v in
+    match M.find_opt i m with
     | Some bs -> M.add i (v :: bs) m
     | None -> M.add i [v] m
 
   let alloc t size = 
-    let e = size |> float_of_int |> lg2 |> ceil |> int_of_float in
-    let default () = B.create @@ int_of_float (2. ** (float_of_int e)) in
-    let avail', b = pop t.available e default in
+    let default () = B.create size in
+    let i = 
+      (* Find the lowest possible buffer and check that it isn't too large*)
+      match M.find_first_opt (fun i -> i >= size) t.available with
+      | Some (i,_) -> 
+        if i < 2 * size then i else size
+      | None -> size
+    in 
+    let avail', b = pop t.available i default in
     t.available <- avail';
-    {buf = B.sub b 0 size; underlying = b}
-
-  let create buf = 
-    {buf; underlying=buf}
+    B.reset b;
+    b
 
   let release t buf = 
-    let buf = buf.underlying in
-    B.reset buf;
-    let id = buf |> B.len |> float_of_int |> lg2 |> ceil |> int_of_float in
-    t.available <- push t.available id buf
-
-  let get_buf buf = 
-    buf.buf
-
-  let sub buf off len = 
-    let buf' = B.sub buf.buf off len in
-    {buf with buf = buf'}
+    t.available <- push t.available buf
 end 

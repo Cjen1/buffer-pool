@@ -12,25 +12,25 @@ let independence l =
   let bp = BP.make () in
   let a = BP.alloc bp l in
   let b = BP.alloc bp l in
-  Cstruct.memset (BP.get_buf a) 5;
+  Cstruct.memset a 5;
   Crowbar.check @@ not (a == b)
 
 (* Size of a buffer that you get out is always >= what you request*)
 let sizing l = 
   let bp = BP.make () in
   let a = BP.alloc bp l in
-  Crowbar.check @@ (Cstruct.len (BP.get_buf a) >= l)
+  Crowbar.check @@ (Cstruct.len a >= l)
 
 (* When a buffer is released it is zero'd *)
 let release l = 
   let bp = BP.make () in
   let buf = BP.alloc bp l in
-  Cstruct.memset (BP.get_buf buf) 5;
+  Cstruct.memset buf 5;
   BP.release bp buf;
   let buf' = BP.alloc bp l in
   Crowbar.check_eq 
     ~cmp:Cstruct.compare 
-    (Cstruct.create (Cstruct.len (BP.get_buf buf))) (BP.get_buf buf')
+    (Cstruct.create (Cstruct.len buf)) buf'
 
 let () =
   let open Crowbar in
